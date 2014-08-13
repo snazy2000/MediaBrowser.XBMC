@@ -22,9 +22,9 @@ class PlayUtils():
     def getPlayUrl(self, server, id, result):
     
       addonSettings = xbmcaddon.Addon(id='plugin.video.xbmb3c')
-      # if the path is local and depending on the video quality play we can direct play it do so
+      # if the path is local and depending on the video quality play we can direct play it do so-
       xbmc.log("XBMB3C getPlayUrl")
-      if result.get("LocationType") == "FileSystem" and self.isNetworkQualitySufficient(result) == True and self.isLocalPath(result) == False:
+      if self.isDirectPlay(result) == True:
           xbmc.log("XBMB3C getPlayUrl -> Direct Play")
           playurl = result.get("Path")
           if playurl != None:
@@ -45,13 +45,13 @@ class PlayUtils():
               playurl += '?|User-Agent=%s' % USER_AGENT
         
             
-      elif self.isNetworkQualitySufficient(result) == True:
-         xbmc.log("XBMB3C getPlayUrl -> Stream")
+     # elif self.isNetworkQualitySufficient(result) == True:
+      #   xbmc.log("XBMB3C getPlayUrl -> Stream")
           #No direct path but sufficient network so static stream   
-         if result.get("Type") == "Audio":
-            playurl = 'http://' + server + '/mediabrowser/Audio/' + id + '/stream?static=true&mediaSourceId=' + id
-         else:
-            playurl = 'http://' + server + '/mediabrowser/Videos/' + id + '/stream?static=true&mediaSourceId=' + id   
+       #  if result.get("Type") == "Audio":
+        #    playurl = 'http://' + server + '/mediabrowser/Audio/' + id + '/stream?static=true&mediaSourceId=' + id
+         #else:
+          #  playurl = 'http://' + server + '/mediabrowser/Videos/' + id + '/stream?static=true&mediaSourceId=' + id   
       else:
           #No path or has a path but not sufficient network so transcode
           xbmc.log("XBMB3C getPlayUrl -> Transcode")
@@ -67,11 +67,18 @@ class PlayUtils():
             mediaSources = result.get("MediaSources")
             if(mediaSources != None):
               if mediaSources[0].get('DefaultAudioStreamIndex') != None:
-                 playurl = playurl + "&AudioStreamIndex=" + mediaSources[0].get('DefaultAudioStreamIndex')
+                 playurl = playurl + "&AudioStreamIndex=" +str(mediaSources[0].get('DefaultAudioStreamIndex'))
               if mediaSources[0].get('DefaultSubtitleStreamIndex') != None:
-                 playurl = playurl + "&SubtitleStreamIndex=" + mediaSources[0].get('DefaultAudioStreamIndex')
+                 playurl = playurl + "&SubtitleStreamIndex=" + str(mediaSources[0].get('DefaultAudioStreamIndex'))
       return playurl.encode('utf-8')
 
+    # Works out if we are direct playing or not
+    def isDirectPlay(self, result):
+        if result.get("LocationType") == "FileSystem" and self.isNetworkQualitySufficient(result) == True and self.isLocalPath(result) == False:
+            return True
+        else:
+            return False
+        
 
     # Works out if the network quality can play directly or if transcoding is needed
     def isNetworkQualitySufficient(self, result):
@@ -87,9 +94,9 @@ class PlayUtils():
                xbmc.log("XBMB3C isNetworkQualitySufficient -> TRUE bit rate")   
                return True
            
-        # Any thing else is not ok
-        xbmc.log("XBMB3C isNetworkQualitySufficient -> FALSE default")
-        return False
+        # Any thing else is ok
+        xbmc.log("XBMB3C isNetworkQualitySufficient -> TRUE default")
+        return True
       
        
     # get the addon video quality

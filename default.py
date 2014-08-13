@@ -722,6 +722,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.usr.movies.%d.title"         % (usrMoviesCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.usr.movies.%d.path"          % (usrMoviesCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.usr.movies.%d.type"          % (usrMoviesCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.usr.movies.%d.content"       % (usrMoviesCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.usr.movies.%d.title"  % (usrMoviesCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.usr.movies.%d.type"  % (usrMoviesCount) + "section is:" + section.get('section'))   
             usrMoviesCount += 1
@@ -729,6 +730,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.usr.tvshows.%d.title"        % (usrTVshowsCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.usr.tvshows.%d.path"         % (usrTVshowsCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.usr.tvshows.%d.type"         % (usrTVshowsCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.usr.tvshows.%d.content"       % (usrTVshowsCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.usr.tvshows.%d.title"  % (usrTVshowsCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.usr.tvshows.%d.type"  % (usrTVshowsCount) + "section is:" + section.get('section'))     
             usrTVshowsCount +=1
@@ -736,6 +738,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.usr.music.%d.title"        % (usrMusicCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.usr.music.%d.path"         % (usrMusicCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.usr.music.%d.type"         % (usrMusicCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.usr.music.%d.content"       % (usrMusicCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.usr.music.%d.title"  % (usrMusicCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.usr.music.%d.type"  % (usrMusicCount) + "section is:" + section.get('section'))
             usrMusicCount +=1   
@@ -743,6 +746,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.std.movies.%d.title"         % (stdMoviesCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.std.movies.%d.path"          % (stdMoviesCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.std.movies.%d.type"          % (stdMoviesCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.std.movies.%d.content"       % (stdMoviesCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.std.movies.%d.title"  % (stdMoviesCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.std.movies.%d.type"  % (stdMoviesCount) + "section is:" + section.get('section'))
             stdMoviesCount +=1
@@ -750,6 +754,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.std.tvshows.%d.title"        % (stdTVshowsCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.std.tvshows.%d.path"         % (stdTVshowsCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.std.tvshows.%d.type"         % (stdTVshowsCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.std.tvshows.%d.content"       % (stdTVshowsCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.std.tvshows.%d.title"  % (stdTVshowsCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.std.tvshows.%d.type"  % (stdTVshowsCount) + "section is:" + section.get('section'))
             stdTVshowsCount +=1    
@@ -757,6 +762,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.std.music.%d.title"        % (stdMusicCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.std.music.%d.path"         % (stdMusicCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.std.music.%d.type"         % (stdMusicCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.std.music.%d.content"       % (stdMusicCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.std.music.%d.title"  % (stdMusicCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.std.music.%d.type"  % (stdMusicCount) + "section is:" + section.get('section'))      
             stdMusicCount +=1     
@@ -764,6 +770,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.std.photo.%d.title"        % (stdPhotoCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.std.photo.%d.path"         % (stdPhotoCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.std.photo.%d.type"         % (stdPhotoCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.std.photo.%d.content"       % (stdPhotoCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.std.photo.%d.title"  % (stdPhotoCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.std.photo.%d.type"  % (stdPhotoCount) + "section is:" + section.get('section'))    
             stdPhotoCount +=1
@@ -771,6 +778,7 @@ def skin( filter=None, shared=False ):
             WINDOW.setProperty("xbmb3c.std.channels.%d.title"        % (stdChannelsCount) , section.get('title', 'Unknown'))
             WINDOW.setProperty("xbmb3c.std.channels.%d.path"         % (stdChannelsCount) , "ActivateWindow("+window+",plugin://plugin.video.xbmb3c/" + murl+",return)")
             WINDOW.setProperty("xbmb3c.std.channels.%d.type"         % (stdChannelsCount) , section.get('section'))
+            WINDOW.setProperty("xbmb3c.std.channels.%d.content"       % (stdChannelsCount) , "plugin://plugin.video.xbmb3c/" + murl)
             printDebug("xbmb3c.std.channels.%d.title"  % (stdChannelsCount) + "title is:" + section.get('title', 'Unknown'))
             printDebug("xbmb3c.std.channels.%d.type"  % (stdChannelsCount) + "section is:" + section.get('section'))    
             stdChannelsCount +=1
@@ -916,7 +924,7 @@ def setListItemProps(server, id, listItem,result):
     
     listItem.setProperty('IsPlayable', 'true')
     listItem.setProperty('IsFolder', 'false')
-
+    
     studio = ""
     studios = resultForType.get("Studios")
     if(studios != None):
@@ -926,8 +934,14 @@ def setListItemProps(server, id, listItem,result):
                 studio=temp.encode('utf-8')    
     listItem.setInfo('video', {'studio' : studio})    
 
+    # plsy info
+    playinformation = ''
+    if PlayUtils().isDirectPlay(result) == True:
+        playinformation = 'Direct Play'
+    else:
+        playinformation = 'Transcoding'      
     details = {
-             'title'        : result.get("Name", "Missing Name").encode('utf-8'),
+             'title'        : result.get("Name", "Missing Name").encode('utf-8') + ' - ' + playinformation,
              'plot'         : result.get("Overview")
              }
              
@@ -1293,7 +1307,7 @@ def processDirectory(url, results, progress):
             xbmcplugin.setContent(pluginhandle, 'tvshows')
             viewType="_SERIES"
         elif item.get("Type") == "Season":
-            xbmcplugin.setContent(pluginhandle, 'tvshows')
+            xbmcplugin.setContent(pluginhandle, 'seasons')
             viewType="_SEASONS"
         elif item.get("Type") == "Episode":
             if __settings__.getSetting('addEpisodeNumber') == 'true':
@@ -1427,7 +1441,7 @@ def processDirectory(url, results, progress):
                  'Overlay'      : overlay,
                  'playcount'    : str(playCount),
                  #'aired'       : episode.get('originallyAvailableAt','') ,
-                 'SeriesName'  :  item.get("SeriesName"),
+                 'TVShowTitle'  :  item.get("SeriesName"),
                  'season'       : tempSeason
                  }
                  
@@ -1603,7 +1617,7 @@ def processSearch(url, results, progress):
         # Populate the details list
         details={'title'        : tempTitle,
                  'episode'      : tempEpisode,
-                 'SeriesName'  :  item.get("Series"),
+                 'TVShowTitle'  : item.get("Series"),
                  'season'       : tempSeason
                  }
                  
