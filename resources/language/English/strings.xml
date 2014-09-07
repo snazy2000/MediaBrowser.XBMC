@@ -2,7 +2,7 @@
 <strings>
     <string id="30000">Primary Server Address</string>
     <string id="30001">Auto enter single folder items:</string>
-    <string id="30002">Play from Stream instead of SMB:</string>
+    <string id="30002">Play from HTTP instead of SMB:</string>
     <string id="30004">Log Level:</string>
     <string id="30005">Username: </string>
     <string id="30006">Password: </string>
@@ -45,7 +45,7 @@
     <string id="30062">Premiere Date</string>
     <string id="30063">Date Created</string>
     <string id="30064">Critic Rating</string>
-    <string id="30065">Commuity Rating</string>
+    <string id="30065">Community Rating</string>
     <string id="30066">Play Count</string>
     <string id="30067">Budget</string>
     
@@ -139,4 +139,9 @@
     <string id="30158">Metadata</string>
     <string id="30159">Artwork</string>
     <string id="30160">Video Quality</string>
+    
+     <string id="30161">Enable Suggested Loader (Requires Restart)</string>
+     <string id="30162">Add Season Number</string>     
+     <string id="30163">Flatten Seasons</string>     
+   
 </strings>

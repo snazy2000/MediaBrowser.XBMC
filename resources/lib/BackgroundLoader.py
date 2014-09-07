@@ -14,8 +14,12 @@ import urllib
 import urllib2
 import random
 import time
+from DownloadUtils import DownloadUtils
 
 _MODE_BASICPLAY=12
+
+#define our global download utils
+downloadUtils = DownloadUtils()
 
 class BackgroundRotationThread(threading.Thread):
 
@@ -300,42 +304,12 @@ class BackgroundRotationThread(threading.Thread):
         mb3Port = addonSettings.getSetting('port')    
         userName = addonSettings.getSetting('username')    
         
-        # get the user ID
-        userUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users?format=json"
-        
-        try:
-            requesthandle = urllib.urlopen(userUrl, proxies={})
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("urlopen : " + str(e) + " (" + userUrl + ")", level=0)
-            return False  
-        
-        result = []
-        
-        try:
-            result = json.loads(jsonData)
-        except Exception, e:
-            self.logMsg("jsonload : " + str(e) + " (" + jsonData + ")", level=2)
-            return False
-        
-        userid = ""
-        for user in result:
-            if(user.get("Name") == userName):
-                userid = user.get("Id")    
-                break        
-        
+        # get the user ID       
+        userid = downloadUtils.getUserId()
         self.logMsg("updateCollectionArtLinks UserID : " + userid)
         
         userUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/Items/Root?format=json"
-        try:
-            requesthandle = urllib.urlopen(userUrl, proxies={})
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("updateCollectionArtLinks urlopen : " + str(e) + " (" + userUrl + ")", level=0)
-            return False
-            
+        jsonData = downloadUtils.downloadUrl(userUrl, suppress=False, popup=1 )    
         self.logMsg("updateCollectionArtLinks UserData : " + str(jsonData), 2)
         result = json.loads(jsonData)
         
@@ -343,14 +317,8 @@ class BackgroundRotationThread(threading.Thread):
         self.logMsg("updateCollectionArtLinks ParentID : " + str(parentid), 2)
             
         userRootPath = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/items?ParentId=" + parentid + "&SortBy=SortName&Fields=CollectionType,Overview,RecursiveItemCount&format=json"
-        try:
-            requesthandle = urllib.urlopen(userRootPath, proxies={})
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("updateCollectionArtLinks urlopen : " + str(e) + " (" + userRootPath + ")", level=0)
-            return False
-            
+    
+        jsonData = downloadUtils.downloadUrl(userRootPath, suppress=False, popup=1 ) 
         self.logMsg("updateCollectionArtLinks userRootPath : " + str(jsonData), 2)            
         result = json.loads(jsonData)
         result = result.get("Items")
@@ -387,15 +355,8 @@ class BackgroundRotationThread(threading.Thread):
             #####################################################################################################
             # Process collection item backgrounds
             collectionUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/items?ParentId=" + item.get("Id") + "&IncludeItemTypes=Movie,Series,MusicArtist,Trailer,MusicVideo&Fields=ParentId,Overview&Recursive=true&CollapseBoxSetItems=false&format=json"
-
-            try:
-                requesthandle = urllib2.urlopen(collectionUrl, timeout=60)
-                jsonData = requesthandle.read()
-                requesthandle.close()   
-            except Exception, e:
-                self.logMsg("updateCollectionArtLinks urlopen : " + str(e) + " (" + collectionUrl + ")", level=0)
-                return False    
-
+   
+            jsonData = downloadUtils.downloadUrl(collectionUrl, suppress=False, popup=1 ) 
             collectionResult = json.loads(jsonData)
 
             collectionResult = collectionResult.get("Items")
@@ -453,6 +414,7 @@ class BackgroundRotationThread(threading.Thread):
                             info["action"] = actionUrl
                             info["index"] = index
                             info["id"] = id
+                            info["action"] = "None"
                             info["plot"] = plot
                             info["parent"] = parentID
                             info["name"] = name
@@ -496,43 +458,13 @@ class BackgroundRotationThread(threading.Thread):
         userName = addonSettings.getSetting('username')     
         
         # get the user ID
-        userUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users?format=json"
-        
-        try:
-            requesthandle = urllib.urlopen(userUrl, proxies={})
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("updateTypeArtLinks urlopen : " + str(e) + " (" + userUrl + ")", level=0)
-            return False
-        
-        result = []
-        
-        try:
-            result = json.loads(jsonData)
-        except Exception, e:
-            self.logMsg("jsonload : " + str(e) + " (" + jsonData + ")", level=2)
-            return False
-        
-        userid = ""
-        for user in result:
-            if(user.get("Name") == userName):
-                userid = user.get("Id")    
-                break
-        
+        userid = downloadUtils.getUserId()
         self.logMsg("updateTypeArtLinks UserID : " + userid)
 
         # load Movie BG
         moviesUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/Items?Fields=ParentId,Overview&CollapseBoxSetItems=false&Recursive=true&IncludeItemTypes=Movie&format=json"
 
-        try:
-            requesthandle = urllib2.urlopen(moviesUrl, timeout=60)
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("updateTypeArtLinks urlopen : " + str(e) + " (" + moviesUrl + ")", level=0)
-            return False
-
+        jsonData = downloadUtils.downloadUrl(moviesUrl, suppress=False, popup=1 ) 
         result = json.loads(jsonData)
 
         result = result.get("Items")
@@ -545,6 +477,9 @@ class BackgroundRotationThread(threading.Thread):
             parentID = item.get("ParentId")
             name = item.get("Name")
             plot = item.get("Overview")
+            url =  mb3Host + ":" + mb3Port + ',;' + id
+            url = urllib.quote(url)        
+            actionUrl = "RunPlugin(plugin://plugin.video.xbmb3c/?mode=" + str(_MODE_BASICPLAY) + "&url=" + url + ")"
             if (images == None):
                 images = []
             index = 0
@@ -555,6 +490,7 @@ class BackgroundRotationThread(threading.Thread):
               info["index"] = index
               info["id"] = id
               info["plot"] = plot
+              info["action"] = actionUrl
               info["parent"] = parentID
               info["name"] = name
               self.logMsg("BG Movie Image Info : " + str(info), level=2)
@@ -569,14 +505,7 @@ class BackgroundRotationThread(threading.Thread):
         # load TV BG links
         tvUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/Items?Fields=ParentId,Overview&CollapseBoxSetItems=false&Recursive=true&IncludeItemTypes=Series&format=json"
 
-        try:
-            requesthandle = urllib2.urlopen(tvUrl, timeout=60)
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("updateTypeArtLinks urlopen : " + str(e) + " (" + tvUrl + ")", level=2)
-            return False
-        
+        jsonData = downloadUtils.downloadUrl(tvUrl, suppress=False, popup=1 ) 
         result = json.loads(jsonData)        
         
         result = result.get("Items")
@@ -598,6 +527,7 @@ class BackgroundRotationThread(threading.Thread):
               info["url"] = "http://localhost:15001/?id=" + str(id) + "&type=Backdrop" + "&index=" + str(index) + "&tag=" + backdrop
               info["index"] = index
               info["id"] = id
+              info["action"] = "None"
               info["plot"] = plot
               info["parent"] = parentID
               info["name"] = name
@@ -613,14 +543,7 @@ class BackgroundRotationThread(threading.Thread):
         # load music BG links
         musicUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/Items?Fields=ParentId,Overview&CollapseBoxSetItems=false&Recursive=true&IncludeItemTypes=MusicArtist&format=json"
         
-        try:
-            requesthandle = urllib2.urlopen(musicUrl, timeout=60)
-            jsonData = requesthandle.read()
-            requesthandle.close()   
-        except Exception, e:
-            self.logMsg("updateTypeArtLinks urlopen : " + str(e) + " (" + musicUrl + ")", level=0)
-            return False
-        
+        jsonData = downloadUtils.downloadUrl(musicUrl, suppress=False, popup=1 ) 
         result = json.loads(jsonData)        
         
         result = result.get("Items")
@@ -642,6 +565,7 @@ class BackgroundRotationThread(threading.Thread):
               info["url"] = "http://localhost:15001/?id=" + str(id) + "&type=Backdrop" + "&index=" + str(index) + "&tag=" + backdrop
               info["index"] = index
               info["id"] = id
+              info["action"] = "None"
               info["plot"] = plot
               info["parent"] = parentID
               info["name"] = name
@@ -716,6 +640,12 @@ class BackgroundRotationThread(threading.Thread):
                     WINDOW.setProperty("MB3.Plot", plot )
                 else:
                     WINDOW.clearProperty("MB3.Plot")                            
+
+                if listOfBackgrounds[0]["action"] != None and listOfBackgrounds[0]["action"] != "":
+                    action=listOfBackgrounds[0]["action"]
+                    WINDOW.setProperty("MB3.Action", action )
+                else:
+                    WINDOW.clearProperty("MB3.Action")
                     
             if(listOfBackgrounds != None and len(listOfBackgrounds) > 0):
                 self.logMsg("setItemBackgroundLink Image " + str(self.current_item_art + 1) + " of " + str(len(listOfBackgrounds)), 1)
@@ -740,6 +670,7 @@ class BackgroundRotationThread(threading.Thread):
             self.logMsg("setItemBackgroundLink Resetting MB3.Background.Item.FanArt", 1)
             WINDOW.clearProperty("MB3.Background.Item.FanArt")
             WINDOW.clearProperty("MB3.Plot") 
+            WINDOW.clearProperty("MB3.Action") 
       
             
     def loadItemBackgroundLinks(self, id):
@@ -750,41 +681,11 @@ class BackgroundRotationThread(threading.Thread):
         mb3Host = addonSettings.getSetting('ipaddress')
         mb3Port = addonSettings.getSetting('port')
         userName = addonSettings.getSetting('username')
-        
-        userUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users?format=json"   
-
-        try:
-            requesthandle = urllib.urlopen(userUrl, proxies={})
-            jsonData = requesthandle.read()
-            requesthandle.close()
-        except Exception, e:
-            self.logMsg("loadItemBackgroundLinks urlopen : " + str(e) + " (" + userUrl + ")", level=0)
-            return 
-            
-        result = []
-        
-        try:
-            result = json.loads(jsonData)
-        except Exception, e:
-            self.logMsg("loadItemBackgroundLinks jsonload : " + str(e) + " (" + jsonData + ")", level=2)
-            return              
-        
-        userid = ""
-        for user in result:
-            if(user.get("Name") == userName):
-                userid = user.get("Id")
-                break            
-    
+                   
+        userid = downloadUtils.getUserId()
         itemUrl = "http://" + mb3Host + ":" + mb3Port + "/mediabrowser/Users/" + userid + "/Items/" + id + "?Fields=ParentId,Overview&format=json"
         
-        try:
-            requesthandle = urllib2.urlopen(itemUrl, timeout=60)
-            jsonData = requesthandle.read()
-            requesthandle.close()
-        except Exception, e:
-            self.logMsg("loadItemBackgroundLinks urlopen : " + str(e) + " (" + itemUrl + ")", level=0)
-            return
-
+        jsonData = downloadUtils.downloadUrl(itemUrl, suppress=False, popup=1 ) 
         item = json.loads(jsonData)
         
         self.logMsg("loadItemBackgroundLinks found item : " + str(item), 2);
@@ -807,12 +708,16 @@ class BackgroundRotationThread(threading.Thread):
             images = []
             
         index = 0
-     
+        url =  mb3Host + ":" + mb3Port + ',;' + id
+        url = urllib.quote(url)        
+        actionUrl = "RunPlugin(plugin://plugin.video.xbmb3c/?mode=" + str(_MODE_BASICPLAY) + "&url=" + url + ")"
+      
         newBgLinks = []
         for backdrop in images:
             info = {}
             info["url"] = "http://localhost:15001/?id=" + str(urlid) + "&type=Backdrop" + "&index=" + str(index) + "&tag=" + backdrop
             info["plot"] = plot
+            info["action"] = actionUrl
             info["index"] = index
             info["id"] = urlid
             info["parent"] = parentID
